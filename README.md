@@ -1,1 +1,1 @@
-# Agent
+# Agentic Go2
