@@ -11,6 +11,12 @@ from langgraph.prebuilt import ToolNode
 from dotenv import load_dotenv
 load_dotenv()
 
+from ros2_motion import RosMotionController
+motion = RosMotionController(cmd_vel_topic="/cmd_vel")
+motion.start()   # start ROS once when the process starts
+
+
+
 # 1. Graph State
 class AgentState(TypedDict):
     messages: Annotated[List[BaseMessage], add_messages]
@@ -22,26 +28,13 @@ from langchain_core.tools import tool
 
 
 @tool
-def walk() -> str:
-    """Make the robot walk forward."""
+def walk_forward(duration_s: float = 1.0, speed_mps: float = 0.3) -> str:
+    """Make the robot walk forward for duration_s seconds at speed_mps m/s."""
+    motion.walk_forward(duration_s=duration_s, speed_mps=speed_mps)
+    return f"Walked forward for {duration_s}s at {speed_mps} m/s."
 
-    print("Robot is walking")
 
-    cmd = [
-        "ros2",
-        "topic",
-        "pub",
-        "-1",  # publish once
-        "/cmd_vel",   # change to /cmd_vel for real robot
-        "geometry_msgs/msg/Twist",
-        "{linear: {x: 1, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}"
-    ]
-
-    subprocess.run(cmd, check=True)
-
-    return "Walking executed"
-
-tools = [walk]
+tools = [walk_forward]
 
 
 # 3. LLM with tools
