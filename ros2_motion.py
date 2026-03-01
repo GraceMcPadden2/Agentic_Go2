@@ -90,3 +90,27 @@ class RosMotionController:
             time.sleep(dt)
 
         self.publish_stop()
+
+    def turn_in_place(
+        self,
+        duration_s: float = 1.0,
+        angular_z: float = 0.8,
+        rate_hz: float = 10.0,
+    ):
+        """
+        Publish an in-place rotation cmd_vel for duration, then publish stop.
+        Positive angular_z = CCW, negative = CW (ROS standard).
+        Blocking, same style as walk_forward().
+        """
+        if not self._node:
+            raise RuntimeError("RosMotionController not started. Call start() first.")
+
+        dt = 1.0 / float(rate_hz)
+        t_end = time.time() + float(duration_s)
+
+        while time.time() < t_end:
+            # turn in place: linear_x = 0, angular_z != 0
+            self._node.publish_twist(0.0, angular_z)
+            time.sleep(dt)
+
+        self.publish_stop()
