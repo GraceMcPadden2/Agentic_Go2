@@ -33,8 +33,13 @@ def walk_forward(duration_s: float = 1.0, speed_mps: float = 0.3) -> str:
     motion.walk_forward(duration_s=duration_s, speed_mps=speed_mps)
     return f"Walked forward for {duration_s}s at {speed_mps} m/s."
 
-
-tools = [walk_forward]
+@tool
+def turn_in_place(duration_s: float = 1.0, angular_z: float = 0.8) -> str:
+    """Turn in place for duration_s seconds with angular velocity angular_z rad/s. +CCW, -CW."""
+    motion.turn_in_place(duration_s=duration_s, angular_z=angular_z)
+    direction = "CCW" if angular_z >= 0 else "CW"
+    return f"Turned {direction} for {duration_s}s at {angular_z} rad/s."
+tools = [walk_forward, turn_in_place]
 
 
 # 3. LLM with tools
