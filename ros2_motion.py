@@ -74,10 +74,9 @@ class RosMotionController:
             raise RuntimeError("RosMotionController not started. Call start() first.")
         self._node.publish_twist(0.0, 0.0)
 
-    def walk_forward(self, duration_s: float = 1.0, speed_mps: float = 0.3, rate_hz: float = 10.0):
+    def walk(self, duration_s: float = 1.0, speed_mps: float = 0.3, rate_hz: float = 10.0):
         """
         Publish forward cmd_vel for duration, then publish stop.
-        This is blocking (tool call will block) which is usually fine.
         """
         if not self._node:
             raise RuntimeError("RosMotionController not started. Call start() first.")
