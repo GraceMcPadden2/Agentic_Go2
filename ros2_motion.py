@@ -7,12 +7,13 @@ import rclpy
 from rclpy.node import Node
 from rclpy.executors import SingleThreadedExecutor
 from geometry_msgs.msg import Twist
-
+from std_msgs.msg import String
 
 class _CmdVelNode(Node):
     def __init__(self, topic: str = "/cmd_vel"):
         super().__init__("cmdvel_node")
         self.pub = self.create_publisher(Twist, topic, 10)
+        self.tts_pub = self.create_publisher(String, "/tts", 10)
 
     def publish_twist(self, linear_x: float, angular_z: float = 0.0):
         msg = Twist()
@@ -20,6 +21,10 @@ class _CmdVelNode(Node):
         msg.angular.z = float(angular_z)
         self.pub.publish(msg)
 
+    def publish_tts(self, text: str): 
+        msg = String()
+        msg.data = text
+        self.tts_pub.publish(msg)
 
 class RosMotionController:
     """
@@ -113,3 +118,9 @@ class RosMotionController:
             time.sleep(dt)
 
         self.publish_stop()
+
+    def say(self, text: str):
+        """Publish text to /tts for the robot to speak."""
+        if not self._node:
+            raise RuntimeError("RosMotionController not started. Call start() first.")
+        self._node.publish_tts(text)
