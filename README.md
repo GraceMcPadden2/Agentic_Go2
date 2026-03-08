@@ -8,9 +8,3 @@ The goal of this project is to explore **embodied AI** — enabling language-dri
 - planning and execution of multiple steps
 - Intregration with speech to text
 
-
-## Future Work
-
-- Perception integration (vision + sensing)
-- Autonomous navigation behaviors
-- Safety and constraint-aware execution
